@@ -4,6 +4,8 @@
 # For Docker, the following environment variables are supported:
 #  SENTRY_POSTGRES_HOST
 #  SENTRY_POSTGRES_PORT
+#  SENTRY_MYSQL_HOST
+#  SENTRY_MYSQL_PORT
 #  SENTRY_DB_NAME
 #  SENTRY_DB_USER
 #  SENTRY_DB_PASSWORD
@@ -63,6 +65,37 @@ if postgres:
             'HOST': postgres,
             'PORT': (
                 env('SENTRY_POSTGRES_PORT')
+                or ''
+            ),
+            'OPTIONS': {
+                'autocommit': True,
+            },
+        },
+    }
+
+mysql = env('SENTRY_MYSQL_HOST') or (env('MYSQL_PORT_3306_TCP_ADDR') and 'mysql')
+if mysql:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': (
+                env('SENTRY_DB_NAME')
+                or env('MYSQL_ENV_MYSQL_USER')
+                or 'mysql'
+            ),
+            'USER': (
+                env('SENTRY_DB_USER')
+                or env('MYSQL_ENV_MYSQL_USER')
+                or 'mysql'
+            ),
+            'PASSWORD': (
+                env('SENTRY_DB_PASSWORD')
+                or env('MYSQL_ENV_MYSQL_PASSWORD')
+                or ''
+            ),
+            'HOST': mysql,
+            'PORT': (
+                env('SENTRY_MYSQL_PORT')
                 or ''
             ),
             'OPTIONS': {

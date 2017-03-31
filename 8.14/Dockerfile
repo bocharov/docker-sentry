@@ -56,7 +56,7 @@ RUN set -x \
 ENV SENTRY_VERSION 8.14.1
 
 RUN set -x \
-    && apt-get update && apt-get install -y --no-install-recommends wget g++ && rm -rf /var/lib/apt/lists/* \
+    && apt-get update && apt-get install -y --no-install-recommends libmysqlclient-dev wget g++ && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /usr/src/sentry \
     && wget -O /usr/src/sentry/sentry-${SENTRY_VERSION}-py27-none-any.whl "https://github.com/getsentry/sentry/releases/download/${SENTRY_VERSION}/sentry-${SENTRY_VERSION}-py27-none-any.whl" \
     && wget -O /usr/src/sentry/sentry-${SENTRY_VERSION}-py27-none-any.whl.asc "https://github.com/getsentry/sentry/releases/download/${SENTRY_VERSION}/sentry-${SENTRY_VERSION}-py27-none-any.whl.asc" \
@@ -69,6 +69,7 @@ RUN set -x \
     && pip install \
         /usr/src/sentry/sentry-${SENTRY_VERSION}-py27-none-any.whl \
         /usr/src/sentry/sentry_plugins-${SENTRY_VERSION}-py2.py3-none-any.whl \
+    && pip install mysql-python
     && sentry --help \
     && sentry plugins list \
     && rm -r "$GNUPGHOME" /usr/src/sentry \
